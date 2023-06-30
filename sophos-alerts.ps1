@@ -138,11 +138,11 @@ function Scan-UrlScanIO {
     )
 
     $scanUrl = "https://urlscan.io/api/v1/scan/"
-    $resultUrlTemplate = "https://urlscan.io/result/%SCAN_ID%/"
+    #$resultUrlTemplate = "https://urlscan.io/result/%SCAN_ID%/"
     $scanWaitSeconds = 30
 
     try {
-        $headers = @{ "API-Key" = $ApiKey }
+        $headers = @{ "API-Key" = $ApiKey; 'Content-Type' = 'application/json' }
         $body = @{ "url" = $Url } | ConvertTo-Json
 
         $response = Invoke-RestMethod -Method Post -Uri $scanUrl -Headers $headers -Body $body
@@ -153,7 +153,7 @@ function Scan-UrlScanIO {
 
         Start-Sleep $scanWaitSeconds
 
-        $resultUrl = $resultUrlTemplate -replace "%SCAN_ID%", $scanId
+        $resultUrl = $scanId
         $result = Invoke-RestMethod -Method Get -Uri $resultUrl
 
         Write-Host "Scanning finished" -ForegroundColor DarkYellow
@@ -166,7 +166,6 @@ function Scan-UrlScanIO {
         return 400
     }
 }
-
 
 function checkEvent {
     param($data)
